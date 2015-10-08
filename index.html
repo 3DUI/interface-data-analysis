@@ -6,21 +6,56 @@
 </head>
 <body>
 
+    <table id="results" border="1" style="width:100%">
+        <tr>
+            <th>Number</th>
+            <th>MRT</th>
+            <th>Shadowbox SUS</th>
+            <th>Standard SUS</th>
+        </tr>
+    </table>
+
+
 <script src="libs/jquery.min.js"></script>
 <script src="analysis.js"></script>
 
 <script>
+
+//    var participants = [];
     $(document).ready(function(){
 
-        $.getJSON("rawdata/participants.json")
-            .done(function(json){
-                console.log(json);
-            })
-            .fail(function( jqxhr, textStatus, error ) {
-                var err = textStatus + ", " + error;
-                console.log( "Request Failed: " + err );
-            });
+        var raw = [];
+
+        $.getJSON("rawdata/participants.json", function(data){
+            for(var i = 0; i < data.length; i++){
+                raw.push(data[i]);
+            }
+
+            process(raw);
+
+        });
     });
+
+    var process = function(data){
+
+        var table = $("#results");
+
+        for(var i = 0; i < data.length; i++){
+            var row =  $("<tr></tr>");
+            var num = $("<td></td>").text(data[i]["participantNo"]);
+            var mrt = $("<td></td>").text(scoreMRT(data[i]["mrt-answers"]));
+            var shadSUS = $("<td></td>").text(scoreSUS(data[i]["shadowbox-questionnaire"]["sus"]));
+            var stadSUS = $("<td></td>").text(scoreSUS(data[i]["standard-questionnaire"]["sus"]));
+
+            num.appendTo(row);
+            mrt.appendTo(row);
+            shadSUS.appendTo(row);
+            stadSUS.appendTo(row);
+            row.appendTo(table);
+
+            console.log(mrt.text());
+        }
+    }
 
 </script>
 
