@@ -4,40 +4,27 @@
 
     MRT_ANSWERS = [[1, 3], [1, 4], [2, 4], [2, 3], [1, 3], [1, 4], [2, 4], [2, 3], [2, 4], [1, 4], [3, 4], [2, 3], [1, 2], [2, 4], [2, 3], [1, 4], [2, 4], [2, 3], [1, 3], [1, 4], [2, 4], [2, 3], [1, 4], [1, 3]];
 
-    //scoring MRT given the model answers
-    var scoreMRT = function(answers){
-        var score = 0;
+    var printData = function(participants){
 
-        for(var i = 0; i < answers.length; i++){
-            if(answers[i][0] === MRT_ANSWERS[i][0] && answers[i][1] === MRT_ANSWERS[i][1]){
-                score++;
-            }
+        var table = $("#results");
+
+        for(var i = 0; i < participants.length; i++){
+
+            var row =  $("<tr></tr>");
+            var num = $("<td></td>").text(participants[i].num);
+            var mrt = $("<td></td>").text(participants[i].mrt);
+            var shadSUS = $("<td></td>").text(participants[i].shadowSUS);
+            var stadSUS = $("<td></td>").text(participants[i].standardSUS);
+
+            num.appendTo(row);
+            mrt.appendTo(row);
+            shadSUS.appendTo(row);
+            stadSUS.appendTo(row);
+
+            var time = $("<td></td>").text(participants[i].shadowTasks[participants[i].shadowTasks.length-1].time);
+
+            time.appendTo(row);
+            row.appendTo(table);
         }
-
-        return score;
-    };
-
-    //scoring the SUS given the formula found in
-    //SUS: A Quick and Dirty Usability Scale by John Brooke
-    //http://www.usabilitynet.org/trump/documents/Suschapt.doc
-    var scoreSUS = function(answers){
-        var score = 0;
-
-        for(var i = 0; i < answers.length; i++){
-            var current = answers[i];
-
-            if(i+1 % 2 == 0){
-                current--;
-            }
-            else{
-                current = 5 - current;
-            }
-            score += current;
-        }
-
-        score *= 2.5;
-
-        return score;
-
     };
 

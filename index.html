@@ -12,50 +12,36 @@
             <th>MRT</th>
             <th>Shadowbox SUS</th>
             <th>Standard SUS</th>
+            <th>Task Time</th>
+            <!--<th>Task 9 Accuracy</th>-->
+            <!--<th>Task 9 Score</th>-->
         </tr>
     </table>
 
 
 <script src="libs/jquery.min.js"></script>
+<script src="libs/d3.min.js"></script>
+<script src="participant.js"></script>
+<script src="task.js"></script>
 <script src="analysis.js"></script>
 
 <script>
 
 //    var participants = [];
     $(document).ready(function(){
-
-        var raw = [];
-
         $.getJSON("rawdata/participants.json", function(data){
+            var participants = [];
             for(var i = 0; i < data.length; i++){
-                raw.push(data[i]);
+                participants.push(new Participant(data[i]));
             }
 
-            process(raw);
-
+            printData(participants);
+            console.log(participants[0].standardTasks);
         });
     });
 
-    var process = function(data){
 
-        var table = $("#results");
 
-        for(var i = 0; i < data.length; i++){
-            var row =  $("<tr></tr>");
-            var num = $("<td></td>").text(data[i]["participantNo"]);
-            var mrt = $("<td></td>").text(scoreMRT(data[i]["mrt-answers"]));
-            var shadSUS = $("<td></td>").text(scoreSUS(data[i]["shadowbox-questionnaire"]["sus"]));
-            var stadSUS = $("<td></td>").text(scoreSUS(data[i]["standard-questionnaire"]["sus"]));
-
-            num.appendTo(row);
-            mrt.appendTo(row);
-            shadSUS.appendTo(row);
-            stadSUS.appendTo(row);
-            row.appendTo(table);
-
-            console.log(mrt.text());
-        }
-    }
 
 </script>
 
