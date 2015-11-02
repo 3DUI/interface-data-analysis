@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Plane Tasks</title>
+</head>
+<body>
+
+    <h1>Plane Task</h1>
+
+    <table id="results" border="1" style="width:100%">
+        <tr>
+            <th>Number</th>
+            <th>Interface</th>
+            <th>Distance</th>
+            <th>Angle</th>
+            <th>Time</th>
+        </tr>
+    </table>
+
+    <script src="libs/jquery.min.js"></script>
+    <script src="libs/d3.min.js"></script>
+    <script src="libs/three2.min.js"></script>
+    <script src="participant.js"></script>
+    <script src="task.js"></script>
+    <script src="analysis.js"></script>
+
+<script>
+
+    $(document).ready(function(){
+        $.getJSON("rawdata/participants.json", function(data){
+            var participants = [];
+            for(var i = 0; i < data.length; i++){
+                var curr = new Participant(data[i]);
+                participants.push(curr);
+            }
+
+            printTasks(participants);
+        });
+    });
+
+    var printTasks = function(participants){
+
+        var table = $("#results");
+
+        for(var i = 0; i < participants.length; i++){
+
+            for(var j = 0; j < participants[i].standardTasks.alignScene.length; j++){
+                var current = participants[i].standardTasks.alignScene[j];
+
+                var row =  $("<tr></tr>");
+                var usr = $("<td></td>").text(participants[i].num);
+                var interf = $("<td></td>").text("Standard");
+                var dist = $("<td></td>").text(current.distance);
+                var angle = $("<td></td>").text(current.angle);
+                var time = $("<td></td>").text(current.time);
+
+                usr.appendTo(row);
+                interf.appendTo(row);
+                dist.appendTo(row);
+                angle.appendTo(row);
+                time.appendTo(row);
+                row.appendTo(table);
+            }
+
+            for(j = 0; j < participants[i].shadowTasks.alignScene.length; j++){
+                var current = participants[i].shadowTasks.alignScene[j];
+
+                var row =  $("<tr></tr>");
+                var usr = $("<td></td>").text(participants[i].num);
+                var interf = $("<td></td>").text("Shadowbox");
+                var dist = $("<td></td>").text(current.distance);
+                var angle = $("<td></td>").text(current.angle);
+                var time = $("<td></td>").text(current.time);
+
+                usr.appendTo(row);
+                interf.appendTo(row);
+                dist.appendTo(row);
+                angle.appendTo(row);
+                time.appendTo(row);
+                row.appendTo(table);
+            }
+        }
+    };
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

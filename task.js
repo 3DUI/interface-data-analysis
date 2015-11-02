@@ -91,7 +91,7 @@ var calcAngle = function(type, objects, targets, tasknum){
         var dot = innerProduct(obj.toArray(), tar.toArray());
         var theta = Math.acos(2 * (dot * dot) - 1);
         accumTheta = theta;
-        console.log(objects[0].rotation, objects[1].rotation);
+        //console.log(objects[0].rotation, objects[1].rotation);
     }
 
     if(accumTheta >= Math.PI/2){
