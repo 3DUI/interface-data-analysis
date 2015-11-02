@@ -11,9 +11,18 @@ var Participant = function (data){
 };
 
 var loadTasks = function(taskData){
-    var tasks = [];
+    var tasks = {};
+    tasks.training = [];
+    tasks.alignScene = [];
+    tasks.dodecahedronScene = [];
+    tasks.roomScene = [];
+
+
+
     for(var i = 0; i < taskData.length; i++){
-        tasks.push(new Task(taskData[i]));
+        var curr = new Task(taskData[i]);
+        curr.process();
+        tasks[taskData[i]["taskType"]].push(curr);
     }
     return tasks;
 }

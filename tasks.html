@@ -18,7 +18,7 @@
 
 <script src="libs/jquery.min.js"></script>
 <script src="libs/d3.min.js"></script>
-    <script src="libs/three.min.js"></script>
+    <script src="libs/three2.min.js"></script>
 <script src="participant.js"></script>
 <script src="task.js"></script>
 <script src="analysis.js"></script>
@@ -30,39 +30,45 @@
         $.getJSON("rawdata/participants.json", function(data){
             var participants = [];
             for(var i = 0; i < data.length; i++){
-                participants.push(new Participant(data[i]));
+                var curr = new Participant(data[i]);
+                participants.push(curr);
             }
 
             printTasks(participants);
-//            console.log(participants[0].standardTasks);
+            console.log(participants[0].standardTasks);
         });
     });
 
     var printTasks = function(participants){
 
         var body = $("body");
-
-        for(var i = 0; i < participants.length; i++){
-            var part = $("<h3></h3>").text(participants[i].num);
-            part.appendTo(body);
-
-            var task = $("<p>Standard</p>");
-            task.appendTo(body);
-
-            var table = $("<table><tr> <th>Task</th> <th>Distance</th> <th>Angle</th> <th>Time</th> </tr></table>");
+         var table = $("<table><tr> <th>Number</th> <th>Interface</th> <th>Task</th> <th>Distance</th> <th>Angle</th> <th>Time</th> </tr></table>");
             table.attr("border", 1);
             table.attr("style", "width:100%");
             table.appendTo(body);
 
-            for(var j = 1; j < participants[i].standardTasks.length; j++){
-                var current = participants[i].standardTasks[j];
+        for(var i = 0; i < participants.length; i++){
+//            var part = $("<h3></h3>").text(participants[i].num);
+//            part.appendTo(body);
+
+//            var task = $("<p>Standard</p>");
+//            task.appendTo(body);
+
+
+
+            for(var j = 0; j < participants[i].standardTasks.roomScene.length; j++){
+                var current = participants[i].standardTasks.roomScene[j];
 
                 var row =  $("<tr></tr>");
+                var usr = $("<td></td>").text(participants[i].num);
+                var interf = $("<td></td>").text("Standard");
                 var task = $("<td></td>").text(current.type);
                 var dist = $("<td></td>").text(current.distance);
                 var angle = $("<td></td>").text(current.angle);
                 var time = $("<td></td>").text(current.time);
 
+                usr.appendTo(row);
+                interf.appendTo(row);
                 task.appendTo(row);
                 dist.appendTo(row);
                 angle.appendTo(row);
@@ -70,23 +76,27 @@
                 row.appendTo(table);
             }
 
-            task = $("<p>Shadowbox</p>");
-            task.appendTo(body);
+//            task = $("<p>Shadowbox</p>");
+//            task.appendTo(body);
+//
+//            table = $("<table><tr> <th>Task</th> <th>Distance</th> <th>Angle</th> <th>Time</th> </tr></table>");
+//            table.attr("border", 1);
+//            table.attr("style", "width:100%");
+//            table.appendTo(body);
 
-            table = $("<table><tr> <th>Task</th> <th>Accuracy</th> <th>Angle</th> <th>Time</th> </tr></table>");
-            table.attr("border", 1);
-            table.attr("style", "width:100%");
-            table.appendTo(body);
-
-            for(j = 1; j < participants[i].shadowTasks.length; j++){
-                var current = participants[i].shadowTasks[j];
+            for(j = 0; j < participants[i].shadowTasks.roomScene.length; j++){
+                var current = participants[i].shadowTasks.roomScene[j];
 
                 var row =  $("<tr></tr>");
+                var usr = $("<td></td>").text(participants[i].num);
+                var interf = $("<td></td>").text("Shadowbox");
                 var task = $("<td></td>").text(current.type);
                 var dist = $("<td></td>").text(current.distance);
                 var angle = $("<td></td>").text(current.angle);
                 var time = $("<td></td>").text(current.time);
 
+                usr.appendTo(row);
+                interf.appendTo(row);
                 task.appendTo(row);
                 dist.appendTo(row);
                 angle.appendTo(row);
