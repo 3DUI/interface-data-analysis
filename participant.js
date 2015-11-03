@@ -21,7 +21,7 @@ var loadTasks = function(taskData){
 
     for(var i = 0; i < taskData.length; i++){
         var curr = new Task(taskData[i]);
-        curr.process();
+        //curr.process();
         tasks[taskData[i]["taskType"]].push(curr);
     }
     return tasks;

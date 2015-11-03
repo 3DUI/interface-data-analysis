@@ -6,7 +6,7 @@
 </head>
 <body>
 
-    <h1>Dodecahedron Task</h1>
+    <h1>Room Task</h1>
 
     <table id="results" border="1" style="width:100%">
         <tr>
@@ -14,6 +14,8 @@
             <th>Interface</th>
             <th>Lamp-Table Dist</th>
             <th>Lamp-Table Angle</th>
+            <th>Table-Floor Dist</th>
+            <th>Table-Floor Angle</th>
             <th>Time</th>
         </tr>
     </table>
@@ -45,38 +47,46 @@
 
         for(var i = 0; i < participants.length; i++){
 
-            for(var j = 0; j < participants[i].standardTasks.dodecahedronScene.length; j++){
-                var current = participants[i].standardTasks.dodecahedronScene[j];
+            for(var j = 0; j < participants[i].standardTasks.roomScene.length; j++){
+                var current = participants[i].standardTasks.roomScene[j];
 
                 var row =  $("<tr></tr>");
                 var usr = $("<td></td>").text(participants[i].num);
                 var interf = $("<td></td>").text("Standard");
-                var dist = $("<td></td>").text(current.distance);
-                var angle = $("<td></td>").text(current.angle);
+                var dist0 = $("<td></td>").text(current.distance[0]);
+                var dist1 = $("<td></td>").text(current.distance[1]);
+                var angle0 = $("<td></td>").text(current.angle[0]);
+                var angle1 = $("<td></td>").text(current.angle[1]);
                 var time = $("<td></td>").text(current.time);
 
                 usr.appendTo(row);
                 interf.appendTo(row);
-                dist.appendTo(row);
-                angle.appendTo(row);
+                dist0.appendTo(row);
+                angle0.appendTo(row);
+                dist1.appendTo(row);
+                angle1.appendTo(row);
                 time.appendTo(row);
                 row.appendTo(table);
             }
 
-            for(j = 0; j < participants[i].shadowTasks.dodecahedronScene.length; j++){
-                var current = participants[i].shadowTasks.dodecahedronScene[j];
+            for(j = 0; j < participants[i].shadowTasks.roomScene.length; j++){
+                var current = participants[i].shadowTasks.roomScene[j];
 
                 var row =  $("<tr></tr>");
                 var usr = $("<td></td>").text(participants[i].num);
                 var interf = $("<td></td>").text("Shadowbox");
-                var dist = $("<td></td>").text(current.distance);
-                var angle = $("<td></td>").text(current.angle);
+                var dist0 = $("<td></td>").text(current.distance[0]);
+                var dist1 = $("<td></td>").text(current.distance[1]);
+                var angle0 = $("<td></td>").text(current.angle[0]);
+                var angle1 = $("<td></td>").text(current.angle[1]);
                 var time = $("<td></td>").text(current.time);
 
                 usr.appendTo(row);
                 interf.appendTo(row);
-                dist.appendTo(row);
-                angle.appendTo(row);
+                dist0.appendTo(row);
+                angle0.appendTo(row);
+                dist1.appendTo(row);
+                angle1.appendTo(row);
                 time.appendTo(row);
                 row.appendTo(table);
             }

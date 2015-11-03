@@ -4,104 +4,101 @@
 var Task = function(taskData){
 
     this.type = taskData["taskType"];
+    this.num = taskData["taskNo"];
     this.time = Math.round(taskData["timeTaken"]/10)/100;
     this.objects = taskData["objects"];
-    this.targets = taskData["targets"];
-    this.num = taskData["taskNo"];
-    //console.log(taskData["taskNo"]);
+    this.target = setupTargets(taskData["targets"][0], this.num, this.type);
+    this.distance = setupDistance(this.type, this.objects, this.target);
+    this.angle = setupAngle(this.type, this.objects, this.target );
 };
 
- Task.prototype.process = function (){
-    //this.accuracy = calcAccuracy();
-    //this.score = calcScore();
-    this.distance = calcDistance(this.type, this.objects, this.targets, this.num );
-    this.angle = calcAngle(this.type, this.objects, this.targets, this.num );
+var getDistance = function(obj, targ){
+    return Math.sqrt(Math.pow((obj.x - targ.x), 2) + Math.pow((obj.y - targ.y), 2) + Math.pow((obj.z - targ.z), 2));
 };
 
-var calcDistance = function(type, objects, targets){
+var setupTargets = function(target, tasknum, tasktype){
 
-    var distance = 0;
-    if(type != "roomScene"){
-        var obj = objects[0].position;
-        var targ = targets[0].position;
-        distance += Math.sqrt(Math.pow((obj.x - targ.x), 2) + Math.pow((obj.y - targ.y), 2) + Math.pow((obj.z - targ.z), 2));
-    }
-    else{
-        var obj = objects[0].position;
-        distance -= 50;
-        var targ = objects[1].position;
-        distance += Math.sqrt(Math.pow((obj.x - targ.x), 2) + Math.pow((obj.y - targ.y), 2) + Math.pow((obj.z - targ.z), 2));
-  }
-    return distance;
-};
-
-var calcAngle = function(type, objects, targets, tasknum){
-
-    var accumTheta = 0;
-
-    if(type === "dodecahedronScene") {
-        var obj = new THREE.Quaternion().setFromEuler(new THREE.Euler(objects[0].rotation._x, objects[0].rotation._y, objects[0].rotation._z, objects[0].rotation._order));
-        var tar = new THREE.Quaternion().setFromEuler(new THREE.Euler(targets[0].rotation._x, targets[0].rotation._y, targets[0].rotation._z, targets[0].rotation._order));
-
-        var dot = innerProduct(obj.toArray(), tar.toArray());
-        var theta = Math.acos(2 * (dot * dot) - 1);
-        accumTheta += theta;
-
-    }
-    else if(type === "alignScene") {
-
-        targets[0].rotation._x = 0;
-        targets[0].rotation._y = 0;
-        targets[0].rotation._z = 0;
+    if(tasktype === "alignScene"){
+        target.rotation._x = 0;
+        target.rotation._y = 0;
+        target.rotation._z = 0;
 
         if(tasknum === 1){
-            targets[0].rotation._x = -Math.PI/4;
+            target.rotation._x = -Math.PI/4;
         }
         else if(tasknum === 2){
-            targets[0].rotation._x = -Math.PI/2;
-            targets[0].rotation._y = -Math.PI/4;
+            target.rotation._x = -Math.PI/2;
+            target.rotation._y = -Math.PI/4;
         }
         else if(tasknum === 3){
-            targets[0].rotation._x = Math.PI/4;
+            target.rotation._x = Math.PI/4;
         }
         else if (tasknum === 4){
-            targets[0].rotation._x = Math.PI/2;
-            targets[0].rotation._y = -Math.PI/4;
+            target.rotation._x = Math.PI/2;
+            target.rotation._y = -Math.PI/4;
         }
-        else{
-            return 0;
-        }
-        objects[0].rotation._z = 0;
-
-        var obj = new THREE.Quaternion().setFromEuler(new THREE.Euler(objects[0].rotation._x, objects[0].rotation._y, objects[0].rotation._z, objects[0].rotation._order));
-        var tar = new THREE.Quaternion().setFromEuler(new THREE.Euler(targets[0].rotation._x, targets[0].rotation._y, targets[0].rotation._z, targets[0].rotation._order));
-
-        obj = taitConversion(obj);
-        tar = taitConversion(tar);
-
-        var dot = innerProduct(obj.toArray(), tar.toArray());
-        var theta = Math.acos(2 * (dot * dot) - 1);
-        accumTheta += theta;
-
-        //console.log(obj, tar);
     }
-    else if(type === "roomScene"){
-        var obj = new THREE.Quaternion().setFromEuler(new THREE.Euler(objects[0].rotation._x, objects[0].rotation._y, objects[0].rotation._z, objects[0].rotation._order));
-        var tar = new THREE.Quaternion().setFromEuler(new THREE.Euler(objects[1].rotation._x, objects[1].rotation._y, objects[1].rotation._z, objects[1].rotation._order));
-        var dot = innerProduct(obj.toArray(), tar.toArray());
-        var theta = Math.acos(2 * (dot * dot) - 1);
-        accumTheta = theta;
-        //console.log(objects[0].rotation, objects[1].rotation);
-    }
-
-    if(accumTheta >= Math.PI/2){
-        accumTheta =  Math.PI - accumTheta;
-    }
-
-    return accumTheta;
+    return target;
 
 };
 
+var setupDistance = function(type, objects, target){
+
+    if(type === "roomScene"){
+        var distance = [];
+        distance.push(Math.abs(getDistance(objects[0].position, objects[1].position) - 50));
+        distance.push(getDistance(objects[1].position, objects[2].position) - 10);
+        return distance;
+    }
+    else{
+        return getDistance(objects[0].position, target.position);
+    }
+
+};
+
+var createQuat = function(object){
+    return new THREE.Quaternion().setFromEuler(new THREE.Euler(object.rotation._x, object.rotation._y, object.rotation._z, object.rotation._order));
+};
+
+var distBetweenQuats = function(object, target){
+    var dot = innerProduct(object.toArray(), target.toArray());
+    var theta = Math.acos(2 * (dot * dot) - 1);
+
+
+    if(theta >= Math.PI/2){
+        theta =  Math.PI - theta;
+    }
+
+    return theta;
+};
+
+var setupAngle = function(type, objects, target){
+
+    if(type === "dodecahedronScene") {
+        var obj = createQuat(objects[0]);
+        var tar = createQuat(target);
+        return distBetweenQuats(obj, tar);
+    }
+    else if(type === "alignScene") {
+        objects[0].rotation._z = 0;
+
+        var obj = taitConversion(createQuat(objects[0]));
+        var tar = taitConversion(createQuat(target));
+        return distBetweenQuats(obj, tar);
+    }
+    else if(type === "roomScene"){
+        var angle = [];
+
+        var obj = createQuat(objects[0]);
+        var tar = createQuat(objects[1]);
+        angle.push(distBetweenQuats(obj, tar));
+
+        obj = createQuat(objects[1]);
+        tar = createQuat(objects[2]);
+        angle.push(distBetweenQuats(obj, tar));
+        return angle;
+    }
+};
 
 var taitConversion = function(quart){
 
@@ -132,10 +129,6 @@ var innerProduct = function(object, target){
     }
 
     return sum;
-};
-
-var calcAccuracy = function(){
-    return 0;
 };
 
 var calcScore = function(){
